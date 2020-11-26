@@ -5,9 +5,9 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "nodemon -r dotenv/config --verbose",
-    "test": "mocha src/**/*test.js",
-    "test:unit": "mocha src/**/*utest.js",
-    "test:int": "mocha src/**/*itest.js",
+    "test": "mocha src/**/*-utest.js src/**/*-itest.js",
+    "test:unit": "mocha src/**/*-utest.js",
+    "test:int": "mocha src/**/*-itest.js",
     "db:migrate:up": "node ./src/bin/database-migration.js"
   },
   "repository": {
