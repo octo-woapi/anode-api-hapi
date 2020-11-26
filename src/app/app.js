@@ -1,17 +1,31 @@
 const Hapi = require("@hapi/hapi");
+const { database } = require("./database");
 
-const buildServer = (host, port) => Hapi.server({ port: port, host: host });
-const addRoutes = (server, routes) => {
+exports.buildServer = (host, port) =>
+  Hapi.server({
+    port: port,
+    host: host,
+    router: {
+      stripTrailingSlash: true,
+    },
+  });
+
+exports.addRoutes = (server, routes) => {
   routes.forEach((route) => {
     server.route(route);
   });
 };
 
-const init = async (server) => {
-  await server.start();
-  console.log("Server running on %s", server.info.uri);
-};
+exports.init = async (server) => {
+  await database
+    .authenticate()
+    .then(() => {
+      console.log("Connection to database established successfully.");
 
-exports.buildServer = buildServer;
-exports.addRoutes = addRoutes;
-exports.init = init;
+      server.start();
+      console.log("Server running on %s", server.info.uri);
+    })
+    .catch((err) => {
+      console.log("Unable to connect to the database: ", err);
+    });
+};

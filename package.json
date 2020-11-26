@@ -5,7 +5,10 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "nodemon -r dotenv/config --verbose",
-    "test": "mocha src/**/*-test.js"
+    "test": "mocha src/**/*test.js",
+    "test:unit": "mocha src/**/*utest.js",
+    "test:int": "mocha src/**/*itest.js",
+    "db:migrate:up": "node ./src/bin/database-migration.js"
   },
   "repository": {
     "type": "git",
@@ -26,10 +29,13 @@
   "homepage": "https://github.com/octo-woapi/anode-api-hapi#readme",
   "dependencies": {
     "@hapi/hapi": "20.0.3",
-    "dotenv": "8.2.0"
+    "dotenv": "8.2.0",
+    "sequelize": "6.3.5",
+    "sqlite3": "5.0.0"
   },
   "devDependencies": {
     "chai": "4.2.0",
+    "chai-arrays": "2.2.0",
     "mocha": "8.2.1",
     "nodemon": "2.0.6",
     "supertest": "6.0.1"
