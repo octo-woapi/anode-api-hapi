@@ -1,0 +1,131 @@
+{
+	"info": {
+		"_postman_id": "bcd8f6b6-b8d5-4ab0-946b-baf641f0529f",
+		"name": "Match API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Home",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b620c876-a3e5-48e1-a89c-b9d4276acbbb",
+						"exec": [
+							"pm.test(\"Status test\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Json response\", function () {",
+							"    pm.response.to.have.jsonBody();",
+							"});",
+							"",
+							"pm.test(\"body is correct\", function () {",
+							"    const responseJson = pm.response.json();",
+							"    pm.expect(responseJson.msg).to.eql('Hello World!');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Creation d'un match",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/matches/",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"matches",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lister les matchs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/matches?limit=2&page=1",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"matches"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Détail d'un match",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/matches/{{matchId}}",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"matches",
+						"{{matchId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Suppression d'un match",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/matches/53f5039e-0bb2-4162-9148-85ff31c46fdf",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"matches",
+						"53f5039e-0bb2-4162-9148-85ff31c46fdf"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

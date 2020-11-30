@@ -16,6 +16,12 @@ installer les dépendances
 npm install
 ```
 
+créer la base de données et créer la structure
+
+```bash
+npm run db:migrate:up
+```
+
 lancer le serveur
 
 ```bash

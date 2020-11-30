@@ -7,7 +7,7 @@ const expect = chai.expect;
 describe("When calling the database", function () {
   it("returns a Sequelize database instance", function () {
     // GIVEN
-    const expected = "db.sqlite";
+    const expected = "db-test.sqlite";
 
     // WHEN
     const database = initDatabase(expected);

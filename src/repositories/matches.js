@@ -4,8 +4,13 @@ const create = (match) => {
   MatchModel.create(match);
 };
 
-const findAll = async () => {
-  return await MatchModel.findAll();
+const findAll = async (limit, page) => {
+  const result = await MatchModel.findAndCountAll({
+    limit,
+    offset: (page - 1) * limit,
+  });
+
+  return result;
 };
 
 // TODO ajouter les exceptions

@@ -115,12 +115,15 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# OS specific files
+.DS_Store
+
 # internal use only
 STEPS.md
 TODOS.md
 
 # sqlite db file
-db.sqlite
+*.sqlite
 *.sql
 
 # IDE specific config files
