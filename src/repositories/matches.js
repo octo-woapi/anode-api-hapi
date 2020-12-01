@@ -1,16 +1,24 @@
 const { MatchModel } = require("../models/matches");
+const { computeOffset, paginate } = require("../helpers/pagination-helper");
 
 const create = (match) => {
   MatchModel.create(match);
 };
 
 const findAll = async (limit, page) => {
+  const offset = computeOffset(limit, page);
+
   const result = await MatchModel.findAndCountAll({
     limit,
-    offset: (page - 1) * limit,
+    offset,
   });
 
-  return result;
+  const pagination = paginate(limit, page, result.count);
+
+  return {
+    ...result,
+    ...pagination,
+  };
 };
 
 // TODO ajouter les exceptions

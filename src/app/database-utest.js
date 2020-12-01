@@ -1,8 +1,7 @@
 const request = require("supertest");
-const { initDatabase } = require("./database");
-
 const chai = require("chai");
 const expect = chai.expect;
+const { initDatabase } = require("./database");
 
 describe("When calling the database", function () {
   it("returns a Sequelize database instance", function () {

@@ -1,9 +1,9 @@
 const request = require("supertest");
 const { server } = require("../../app/server");
 const chai = require("chai");
+const expect = chai.expect;
 const assertArrays = require("chai-arrays");
 chai.use(assertArrays);
-const expect = chai.expect;
 
 describe("GET /matches", () => {
   context("when no query params is set", () => {
@@ -141,5 +141,17 @@ describe("GET /matches", () => {
         });
       }
     );
+  });
+  context("request has no query param", () => {
+    it("returns an array of matches with default page and default page number", (done) => {
+      // WHEN
+      request(server.listener)
+        .get(`/matches`)
+        //THEN
+        .expect("Content-Range header is filled", (err, resp) => {
+          expect(resp.headers).to.have.property("content-range");
+          done();
+        });
+    });
   });
 });

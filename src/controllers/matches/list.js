@@ -1,5 +1,6 @@
 const { matchRepository } = require("../../repositories/matches");
 const { listMatchesQueryParams } = require("./list-schema");
+const { config } = require("../../../config/config");
 
 exports.listMatchesRoute = {
   method: "GET",
@@ -11,14 +12,21 @@ exports.listMatchesRoute = {
   },
   handler: async (request, h) => {
     // TODO ajouter le tri
-    const defaultLimit = 20;
-    const limit = request.query.limit ? request.query.limit : defaultLimit;
-    const defaultPage = 1;
-    const page = request.query.page ? request.query.page : defaultPage;
+    const limit = request.query.limit
+      ? request.query.limit
+      : config.defaultListLimit;
+    const page = request.query.page
+      ? request.query.page
+      : config.defaultListPage;
 
-    const matches = await matchRepository.findAll(limit, page);
-    const httpStatus = matches.count == matches.rows.length ? 200 : 206;
+    const queryResult = await matchRepository.findAll(limit, page);
 
-    return h.response(matches.rows).code(httpStatus);
+    const httpStatus = queryResult.partialResult ? 206 : 200;
+    const contentRangeHeader = `${queryResult.rangeStart}-${queryResult.rangeEnd}/${queryResult.count}`;
+
+    return h
+      .response(queryResult.rows)
+      .code(httpStatus)
+      .header("content-range", contentRangeHeader);
   },
 };
