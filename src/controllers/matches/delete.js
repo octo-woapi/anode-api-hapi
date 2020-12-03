@@ -6,8 +6,8 @@ exports.deleteMatchRoute = {
   handler: async (request, h) => {
     const match = await matchRepository.findOne(request.params.matchId);
     // TODO gérer les objets de réponse en cas d'erreur
-    if (null === match) return h.response("").code(404);
-    matchRepository.remove(request.params.matchId);
-    return h.response("").code(204);
+    if (null === match) return h.response().code(404);
+    await matchRepository.remove(request.params.matchId);
+    return h.response().code(204);
   },
 };

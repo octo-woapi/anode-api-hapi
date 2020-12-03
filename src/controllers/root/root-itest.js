@@ -2,19 +2,15 @@ const request = require("supertest");
 const { server } = require("../../app/server");
 const expect = require("chai").expect;
 
-describe("GET /", function () {
-  it("responds with json", function (done) {
+describe("GET /", () => {
+  it("responds with json", async () => {
     // GIVEN
     const expected = { msg: "Hello World!" };
 
     // WHEN
-    request(server.listener)
-      .get("/")
+    const { body } = await request(server.listener).get("/");
 
-      // THEN
-      .expect(200, (err, resp) => {
-        expect(resp.body).to.eql(expected);
-        done();
-      });
+    // THEN
+    expect(body).to.eql(expected);
   });
 });

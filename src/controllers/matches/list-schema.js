@@ -1,10 +1,14 @@
 const Joi = require("joi");
+const { config } = require("../../../config/config");
 
-exports.listMatchesQueryParams = Joi.object({
+exports.listMatchesQueryParamsSchema = Joi.object({
   limit: Joi.number()
     .integer()
-    .min(1)
-    .max(100)
+    .min(config.minListLimit)
+    .max(config.maxListLimit)
     .description("Max number of list per page"),
-  page: Joi.number().integer().min(1).description("Page number"),
+  page: Joi.number()
+    .integer()
+    .min(config.minListPage)
+    .description("Page number"),
 });

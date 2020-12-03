@@ -7,25 +7,22 @@ chai.use(assertArrays);
 
 describe("GET /matches", () => {
   context("when no query params is set", () => {
-    it("returns a collection of matches", (done) => {
+    it("returns a collection of matches", async () => {
       // WHEN
-      request(server.listener)
-        .get("/matches")
+      const { body, status } = await request(server.listener).get("/matches");
+      const expectedStatuses = [200, 206];
 
-        // THEN
-        .expect("200", (err, resp) => {
-          expect(resp.body).to.be.array();
+      // THEN
+      expect(expectedStatuses).to.include(status);
+      expect(body).to.be.array();
 
-          const firstMatch = resp.body[0];
-          if (firstMatch) {
-            expect(firstMatch).to.have.property("id");
-            expect(firstMatch).to.have.property("name");
-            expect(firstMatch).to.have.property("createdAt");
-            expect(firstMatch).to.have.property("updatedAt");
-          }
-
-          done();
-        });
+      const firstMatch = body[0];
+      if (firstMatch) {
+        expect(firstMatch).to.have.property("id");
+        expect(firstMatch).to.have.property("name");
+        expect(firstMatch).to.have.property("createdAt");
+        expect(firstMatch).to.have.property("updatedAt");
+      }
     });
   });
 
@@ -37,121 +34,119 @@ describe("GET /matches", () => {
 
         // WHEN
         request(server.listener)
-          .get("/matches?limit=" + badLimit)
+          .get(`/matches?limit=${badLimit}`)
           // THEN
           .expect(400, done);
       });
     });
     context("when `limit` query param is higher than the max value", () => {
-      it("returns a 400 error", (done) => {
+      it("returns a 400 error", async () => {
         // GIVEN
         const tooHighLimit = 101;
 
         // WHEN
-        request(server.listener)
-          .get(`/matches?limit=${tooHighLimit}`)
-          //THEN
-          .expect(400, done);
+        const { status } = await request(server.listener).get(
+          `/matches?limit=${tooHighLimit}`
+        );
+        //THEN
+        expect(status).to.eq(400);
       });
     });
     context("when `limit` query param is lower than the min value", () => {
-      it("returns a 400 error", (done) => {
+      it("returns a 400 error", async () => {
         // GIVEN
         const tooLowLimit = 0;
 
         // WHEN
-        request(server.listener)
-          .get(`/matches?limit=${tooLowLimit}`)
-          //THEN
-          .expect(400, done);
+        const { status } = await request(server.listener).get(
+          `/matches?limit=${tooLowLimit}`
+        );
+        //THEN
+        expect(status).to.eq(400);
       });
     });
 
     context(
       "when `limit` query param is a integer (n) between min and max",
       () => {
-        it("returns a collection of n matches", (done) => {
+        it("returns a collection of n matches", async () => {
           // GIVEN
           const limit = 3;
 
           // WHEN
-          request(server.listener)
-            .get(`/matches?limit=${limit}`)
-            //THEN
-            .expect("partial response", (err, resp) => {
-              expect(resp.statusCode).to.be.eq(206);
-              expect(resp.body).to.be.array();
-              expect(resp.body.length).to.be.eq(limit);
+          const { body, status } = await request(server.listener).get(
+            `/matches?limit=${limit}`
+          );
 
-              const firstMatch = resp.body[0];
-              if (firstMatch) {
-                expect(firstMatch).to.have.property("id");
-                expect(firstMatch).to.have.property("name");
-                expect(firstMatch).to.have.property("createdAt");
-                expect(firstMatch).to.have.property("updatedAt");
-              }
+          //THEN
+          expect(status).to.be.eq(206);
+          expect(body).to.be.array();
+          expect(body.length).to.be.eq(limit);
 
-              done();
-            });
+          const firstMatch = body[0];
+          if (firstMatch) {
+            expect(firstMatch).to.have.property("id");
+            expect(firstMatch).to.have.property("name");
+            expect(firstMatch).to.have.property("createdAt");
+            expect(firstMatch).to.have.property("updatedAt");
+          }
         });
       }
     );
   });
   context("`page` query param is set", () => {
     context("when page is not an integer", () => {
-      it("throws a 400 error", (done) => {
+      it("throws a 400 error", async () => {
         // GIVEN
         const badPageNumber = "ABC";
 
         // WHEN
-        request(server.listener)
-          .get(`/matches?page=${badPageNumber}`)
-          // THEN
-          .expect(400, done);
+        const { status } = await request(server.listener).get(
+          `/matches?page=${badPageNumber}`
+        );
+        // THEN
+        expect(status).to.eq(400);
       });
     });
     context("when `page` query param is lower than the min value", () => {
-      it("returns a 400 error", (done) => {
+      it("returns a 400 error", async () => {
         // GIVEN
         const tooLowPageNumber = 0;
 
         // WHEN
-        request(server.listener)
-          .get(`/matches?page=${tooLowPageNumber}`)
-          //THEN
-          .expect(400, done);
+        const { status } = await request(server.listener).get(
+          `/matches?page=${tooLowPageNumber}`
+        );
+        //THEN
+        expect(status).to.eq(400);
       });
     });
     context(
       "when `page` query param is a integer (n) between min and max",
       () => {
-        it("returns a collection of n matches", (done) => {
+        it("returns a collection of n matches", async () => {
           // GIVEN
           const page = 2;
 
           // WHEN
-          request(server.listener)
-            .get(`/matches?page=${page}`)
-            //THEN
-            .expect("partial content", (err, resp) => {
-              expect(resp.statusCode).to.be.eq(206);
-              expect(resp.body).to.be.array();
-              done();
-            });
+          const { status, body } = await request(server.listener).get(
+            `/matches?page=${page}`
+          );
+          //THEN
+
+          expect(status).to.be.eq(206);
+          expect(body).to.be.array();
         });
       }
     );
   });
   context("request has no query param", () => {
-    it("returns an array of matches with default page and default page number", (done) => {
+    it("returns an array of matches with default page and default page number", async () => {
       // WHEN
-      request(server.listener)
-        .get(`/matches`)
-        //THEN
-        .expect("Content-Range header is filled", (err, resp) => {
-          expect(resp.headers).to.have.property("content-range");
-          done();
-        });
+      const { headers } = await request(server.listener).get(`/matches`);
+
+      //THEN
+      expect(headers).to.have.property("content-range");
     });
   });
 });

@@ -3,8 +3,8 @@ const chai = require("chai");
 const expect = chai.expect;
 const { initDatabase } = require("./database");
 
-describe("When calling the database", function () {
-  it("returns a Sequelize database instance", function () {
+describe("When calling the database", () => {
+  it("returns a Sequelize database instance", () => {
     // GIVEN
     const expected = "db-test.sqlite";
 
